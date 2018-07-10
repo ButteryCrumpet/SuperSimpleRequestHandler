@@ -2,10 +2,9 @@
 
 namespace SuperSimpleRequestHandler;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class LegacyHandler
+class LegacyHandler implements LegacyRequestHandlerInterface
 {
     private $stack;
 
@@ -15,15 +14,14 @@ class LegacyHandler
      */
     public function __construct($stack)
     {
-        if (! is_iterable($stack)) {
+        if (!(is_array( $stack ) || ( is_object( $stack ) && ( $stack instanceof \Traversable ) ))) {
             throw new \InvalidArgumentException('\$queue must be array or Traversable.');
         }
         $this->stack = $stack;
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @inheritdoc
      */
     public function handle(ServerRequestInterface $request)
     {
